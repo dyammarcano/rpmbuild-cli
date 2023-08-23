@@ -6,7 +6,6 @@ import (
 
 const (
 	RepoDataName  = ".repodata"
-	GpgKeysName   = "gpgkeys"
 	RpmBuildName  = "rpmbuild"
 	BuildName     = "BUILD"
 	BuildRootName = "BUILDROOT"
@@ -17,8 +16,6 @@ const (
 )
 
 var (
-	GpgKeysPath = filepath.Join(RepoDataName, GpgKeysName)
-
 	BuildPath     = filepath.Join(RpmBuildName, BuildName)
 	BuildRootPath = filepath.Join(RpmBuildName, BuildRootName)
 	RpmsPath      = filepath.Join(RpmBuildName, RpmsName)

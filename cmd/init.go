@@ -1,9 +1,14 @@
 package cmd
 
 import (
+	"github.com/dyammarcano/rpmbuild-cli/internal"
+	"github.com/dyammarcano/rpmbuild-cli/internal/database"
 	"github.com/dyammarcano/rpmbuild-cli/internal/directory"
+	"github.com/dyammarcano/rpmbuild-cli/internal/initialfile"
+	"github.com/dyammarcano/rpmbuild-cli/internal/structures"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"os"
+	"path/filepath"
 )
 
 // initCmd represents the init command
@@ -21,15 +26,51 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(initCmd)
-
-	initCmd.Flags().BoolP("directory", "f", false, "Create the directory structure")
-
-	if err := viper.BindPFlag("directory", initCmd.Flags().Lookup("directory")); err != nil {
-		panic(err)
-	}
 }
 
 func InitFunc(cmd *cobra.Command, args []string) error {
-	directory.CriateFoldersStructure(viper.GetString("directory"))
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if len(args) > 0 {
+		if args[0] != "." {
+			wd = filepath.Join(wd, args[0])
+		}
+	}
+
+	if err := directory.CriateFoldersStructure(wd); err != nil {
+		return err
+	}
+
+	initialfile.InitialFile(wd)
+
+	databaseFile := filepath.Join(wd, internal.RepoDatabaseFile)
+
+	db, err := database.NewDatabase(databaseFile)
+	if err != nil {
+		return err
+	}
+
+	defer db.Close()
+
+	if db == nil {
+		return err
+	}
+
+	if err := db.Migrate(
+		&structures.Package{},
+		&structures.PackageFile{},
+		&structures.PackageVersion{},
+		&structures.PackageProvide{},
+		&structures.PackageRequire{},
+		&structures.Changelog{},
+		&structures.Spec{},
+		&structures.File{},
+	); err != nil {
+		return err
+	}
+
 	return nil
 }

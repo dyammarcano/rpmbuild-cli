@@ -101,18 +101,9 @@ func walkFiles(path string) ([]DirEntry, error) {
 */
 
 // CriateFoldersStructure creates the folders structure for the RPM build
-func CriateFoldersStructure(basePath string) {
-	if basePath == "" {
-		cwd, err := os.Getwd()
-		if err != nil {
-			panic(err)
-		}
-		basePath = cwd
-	}
-
+func CriateFoldersStructure(basePath string) error {
 	directories := []string{
 		internal.RepoDataName,
-		internal.GpgKeysPath,
 		internal.BuildPath,
 		internal.BuildRootPath,
 		internal.RpmsPath,
@@ -126,4 +117,6 @@ func CriateFoldersStructure(basePath string) {
 			panic(err)
 		}
 	}
+
+	return nil
 }

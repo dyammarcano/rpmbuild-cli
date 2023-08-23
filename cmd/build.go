@@ -2,29 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
 	"github.com/dyammarcano/rpmbuild-cli/internal"
+	"github.com/dyammarcano/rpmbuild-cli/internal/structures"
+	"github.com/spf13/cobra"
 	"os"
 	"reflect"
 	"sort"
 	"strings"
-	"time"
-
-	"github.com/BurntSushi/toml"
-	"github.com/spf13/cobra"
-)
-
-type (
-	Config struct {
-		Host       string    `toml:"host"`
-		User       string    `toml:"user"`
-		Pass       string    `toml:"pass"`
-		Db         string    `toml:"db"`
-		Age        int       `toml:"age"`
-		Cats       []string  `toml:"cats"`
-		Pi         float64   `toml:"pi"`
-		Perfection []int     `toml:"perfection"`
-		DOB        time.Time `toml:"dob"`
-	}
 )
 
 // buildCmd represents the build command
@@ -61,7 +46,7 @@ func BuildFunc(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	var conf Config
+	var conf structures.Config
 	meta, err := toml.DecodeFile(internal.RepoDataFile, &conf)
 	if err != nil {
 		return err

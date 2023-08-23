@@ -3,6 +3,18 @@ package structures
 import "time"
 
 type (
+	Config struct {
+		Host       string    `toml:"host"`
+		User       string    `toml:"user"`
+		Pass       string    `toml:"pass"`
+		Db         string    `toml:"db"`
+		Age        int       `toml:"age"`
+		Cats       []string  `toml:"cats"`
+		Pi         float64   `toml:"pi"`
+		Perfection []int     `toml:"perfection"`
+		DOB        time.Time `toml:"dob"`
+	}
+
 	Package struct {
 		PkgID     string `gorm:"primarykey"`
 		Name      string
