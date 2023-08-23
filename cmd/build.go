@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/dyammarcano/rpmbuild-cli/internal"
 	"os"
-	"path/filepath"
 	"reflect"
 	"sort"
 	"strings"
@@ -27,32 +27,6 @@ type (
 	}
 )
 
-const (
-	RepoDataName  = ".repodata"
-	GpgKeysName   = "gpgkeys"
-	RpmBuildName  = "rpmbuild"
-	BuildName     = "BUILD"
-	BuildRootName = "BUILDROOT"
-	RpmsName      = "RPMS"
-	SourcesName   = "SOURCES"
-	SpecsName     = "SPECS"
-	SrpmsName     = "SRPMS"
-)
-
-var (
-	GpgKeysPath = filepath.Join(RepoDataName, GpgKeysName)
-
-	BuildPath     = filepath.Join(RpmBuildName, BuildName)
-	BuildRootPath = filepath.Join(RpmBuildName, BuildRootName)
-	RpmsPath      = filepath.Join(RpmBuildName, RpmsName)
-	SourcesPath   = filepath.Join(RpmBuildName, SourcesName)
-	SpecsPath     = filepath.Join(RpmBuildName, SpecsName)
-	SrpmsPath     = filepath.Join(RpmBuildName, SrpmsName)
-
-	RepoDatabaseFile = filepath.Join(RepoDataName, "config.sqlite3")
-	RepoDataFile     = filepath.Join(RepoDataName, "repodata.toml")
-)
-
 // buildCmd represents the build command
 var buildCmd = &cobra.Command{
 	Use:   "build",
@@ -63,7 +37,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: Build,
+	RunE: BuildFunc,
 }
 
 func init() {
@@ -80,19 +54,17 @@ func init() {
 	// buildCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func Build(cmd *cobra.Command, args []string) {
+func BuildFunc(cmd *cobra.Command, args []string) error {
 	fmt.Println("build called")
 
-	if _, err := os.Stat(RepoDataFile); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	if _, err := os.Stat(internal.RepoDataFile); err != nil {
+		return err
 	}
 
 	var conf Config
-	meta, err := toml.DecodeFile(RepoDataFile, &conf)
+	meta, err := toml.DecodeFile(internal.RepoDataFile, &conf)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
 	indent := strings.Repeat(" ", 14)
@@ -128,4 +100,6 @@ func Build(cmd *cobra.Command, args []string) {
 		}
 		fmt.Printf("%s%-10s %s\n", indent, meta.Type(k...), k)
 	}
+
+	return nil
 }
