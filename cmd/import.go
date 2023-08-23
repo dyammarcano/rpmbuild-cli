@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// exportCmd represents the export command
-var exportCmd = &cobra.Command{
-	Use:   "export",
+// importCmd represents the import command
+var importCmd = &cobra.Command{
+	Use:   "import",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -16,15 +16,15 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	RunE: ExportFunc,
+	RunE: ImportFunc,
 }
 
 func init() {
-	rootCmd.AddCommand(exportCmd)
+	rootCmd.AddCommand(importCmd)
 }
 
-func ExportFunc(cmd *cobra.Command, args []string) error {
-	fmt.Println("export called")
-	//TODO dump all the data from the database to a file
+func ImportFunc(cmd *cobra.Command, args []string) error {
+	fmt.Println("import called")
+	//TODO import the data from the file to the database
 	return nil
 }

@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
 
-// analyzeCmd represents the analyze command
+// analyzeCmd represents the analysis command
 var analyzeCmd = &cobra.Command{
 	Use:   "analyze",
 	Short: "A brief description of your command",
@@ -23,14 +25,26 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(analyzeCmd)
+}
 
-	// Here you will define your flags and configuration settings.
+func AnalyzeFunc(cmd *cobra.Command, args []string) error {
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// analyzeCmd.PersistentFlags().String("foo", "", "A help for foo")
+	if len(args) > 0 {
+		if args[0] != "." {
+			wd = filepath.Join(wd, args[0])
+		}
+	}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// analyzeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fmt.Println("analyze called")
+	//TODO implement analyze function to analyze the project and generate the report to sqlite database
+	//TODO check for zip, tar, 7z, cpio, xz and gzip files
+	//TODO check for spec file
+	//TODO check for source files
+	//TODO check for patches
+	//TODO check for changelog
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/dyammarcano/rpmbuild-cli/internal/structures"
 	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
 	"reflect"
 	"sort"
 	"strings"
@@ -27,27 +28,30 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(buildCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// buildCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// buildCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func BuildFunc(cmd *cobra.Command, args []string) error {
-	fmt.Println("build called")
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
 
-	if _, err := os.Stat(internal.RepoDataFile); err != nil {
+	if len(args) > 0 {
+		if args[0] != "." {
+			wd = filepath.Join(wd, args[0])
+		}
+	}
+
+	repodata := filepath.Join(wd, internal.RepoDataFile)
+
+	//TODO kelper decode encode toml file
+
+	if _, err := os.Stat(repodata); err != nil {
 		return err
 	}
 
 	var conf structures.Config
-	meta, err := toml.DecodeFile(internal.RepoDataFile, &conf)
+	meta, err := toml.DecodeFile(repodata, &conf)
 	if err != nil {
 		return err
 	}
