@@ -1,0 +1,8 @@
+version: '3'
+
+vars:
+  GOOS: windows
+  GOARCH: amd64
+  APP_NAME: app.exe
+  APP_NAME_DIST: app_dist.exe
+  GOBUILD: CGO_ENABLED=1 GOARCH={{ .GOARCH }} GOOS={{ .GOOS }}

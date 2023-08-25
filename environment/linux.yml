@@ -1,0 +1,8 @@
+version: '3'
+
+vars:
+  GOOS: linux
+  GOARCH: amd64
+  APP_NAME: app
+  APP_NAME_DIST: app_dist
+  GOBUILD: CGO_ENABLED=1 GOARCH={{ .GOARCH }} GOOS={{ .GOOS }}
