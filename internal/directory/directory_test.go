@@ -2,6 +2,8 @@ package directory
 
 import (
 	"encoding/json"
+	"github.com/dyammarcano/rpmbuild-cli/internal"
+	"github.com/dyammarcano/utils/mocks"
 	"os"
 	"path/filepath"
 	"testing"
@@ -10,9 +12,9 @@ import (
 func TempDirectoryWithFiles(t *testing.T) (dirPath string, cleanup func()) {
 	t.Helper()
 
-	dir, err := os.MkdirTemp("", "testdir")
+	dir, err := mocks.CreateTempDir(t)
 	if err != nil {
-		t.Fatalf("failed to create temp directory: %v", err)
+		t.Errorf("Failed to create tmp dir: %v", err)
 	}
 
 	// make second level directory
@@ -33,8 +35,7 @@ func TempDirectoryWithFiles(t *testing.T) (dirPath string, cleanup func()) {
 	}
 
 	for _, file := range files {
-		path := filepath.Join(dir, file)
-		f, err := os.Create(path)
+		f, err := os.Create(filepath.Join(dir, file))
 		if err != nil {
 			t.Fatalf("failed to create temp file: %v, %v", file, err)
 		}
@@ -51,8 +52,7 @@ func TempDirectoryWithFiles(t *testing.T) (dirPath string, cleanup func()) {
 	}
 
 	return dir, func() {
-		err := os.RemoveAll(dir)
-		if err != nil {
+		if err := os.RemoveAll(dir); err != nil {
 			t.Fatalf("failed to cleanup temp directory: %v", err)
 		}
 	}
@@ -94,4 +94,20 @@ func TestDirectory_WalkDir(t *testing.T) {
 	}
 
 	t.Logf("Entries: %s", data)
+}
+
+func TestDirectory_CriateFoldersStructure(t *testing.T) {
+	dir, err, cleanup := mocks.CreateTempDirCleanUp(t)
+	if err != nil {
+		t.Errorf("Failed to create tmp dir: %v", err)
+	}
+	defer cleanup()
+
+	if err := CriateFoldersStructure(dir); err != nil {
+		t.Errorf("Failed to create folders structure: %v", err)
+	}
+
+	if _, err := os.Stat(filepath.Join(dir, internal.RpmsPath)); os.IsNotExist(err) {
+		t.Errorf("package directory was not created")
+	}
 }

@@ -89,21 +89,23 @@ func walkFiles(path string) ([]DirEntry, error) {
 }
 
 /*
-├── rpmbuild
-│   ├── BUILD
-│   ├── BUILDROOT
-│   ├── RPMS
-│   ├── SOURCES
-│   ├── SPECS
-│   └── SRPMS
-└── .repodata
-    └── gpgkeys
+└── .rpm
+	├── package
+	│   ├── BUILD
+	│   ├── BUILDROOT
+	│   ├── RPMS
+	│   ├── SOURCES
+	│   ├── SPECS
+	│   └── SRPMS
+	└── repodata
+		└── config.sqlite3
+		└── repodata.toml
 */
 
 // CriateFoldersStructure creates the folders structure for the RPM build
 func CriateFoldersStructure(basePath string) error {
 	directories := []string{
-		internal.RepoDataName,
+		internal.RepoDataPath,
 		internal.BuildPath,
 		internal.BuildRootPath,
 		internal.RpmsPath,
@@ -114,7 +116,123 @@ func CriateFoldersStructure(basePath string) error {
 
 	for _, directory := range directories {
 		if err := os.MkdirAll(filepath.Join(basePath, directory), 0755); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+/*
+├── boot				(bootable kernel images, etc.)
+├── dev					(device files)
+├── etc					(host-specific system configuration)
+│	└── systemd
+│	 	└── system		(systemd unit files)
+├── home				(user home directories)
+├── lib					(shared libraries)
+│	├── lib				(64-bit shared libraries)
+│	└── systemd
+│	 	└── system		(systemd unit files)
+├── lib64				(64-bit shared libraries)
+├── media				(removable media)
+├── mnt					(mount point for a temporarily mounted filesystem)
+├── opt					(add-on application software packages)
+│	└── bin				(binaries for add-on packages)
+├── proc				(process information pseudo-filesystem)
+├── root				(root home directory)
+├── run 				(run-time variable data)
+├── sbin				(system binaries)
+├── srv					(data for services provided by this system)
+├── sys					(system information)
+├── tmp					(temporary files)
+├── usr					(read-only user data)
+│	├── bin				(user binaries)
+│	├── include			(C header files)
+│	├── lib				(user libraries)
+│	├── local			(secondary hierarchy)
+│	├── sbin			(system binaries)
+│	├── share			(architecture-independent data)
+│	├── src				(source code)
+│	└── tmp				(temporary files)
+└── var					(variable data)
+	├── lib				(variable state information)
+	├── tmp				(temporary files)
+	├── cache			(application cache data)
+	└── log				(log files)
+*/
+
+func CriateFoldersStructureLinux(basePath string) error {
+	directories := []string{
+		"boot",
+		"dev",
+		"etc",
+		"etc/systemd",
+		"etc/systemd/system",
+		"home",
+		"lib",
+		"lib/lib",
+		"lib/systemd",
+		"lib/systemd/system",
+		"lib64",
+		"media",
+		"mnt",
+		"opt",
+		"opt/bin",
+		"proc",
+		"root",
+		"run",
+		"sbin",
+		"srv",
+		"sys",
+		"tmp",
+		"usr",
+		"usr/bin",
+		"usr/include",
+		"usr/lib",
+		"usr/local",
+		"usr/sbin",
+		"usr/share",
+		"usr/src",
+		"usr/tmp",
+		"var",
+		"var/lib",
+		"var/tmp",
+		"var/cache",
+		"var/log",
+	}
+
+	for _, directory := range directories {
+		if err := os.MkdirAll(filepath.Join(basePath, directory), 0755); err != nil {
 			panic(err)
+		}
+	}
+
+	return nil
+}
+
+func CleanDirectoriesNotUsed(basePath string) error {
+	var dirs []string
+
+	err := filepath.WalkDir(basePath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if path != basePath && d.IsDir() {
+			dirs = append(dirs, path)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	for _, dir := range dirs {
+		if err := os.Remove(dir); err != nil {
+			return err
 		}
 	}
 

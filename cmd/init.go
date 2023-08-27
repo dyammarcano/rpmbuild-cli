@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"errors"
+	"fmt"
 	"github.com/dyammarcano/rpmbuild-cli/internal"
 	"github.com/dyammarcano/rpmbuild-cli/internal/database"
 	"github.com/dyammarcano/rpmbuild-cli/internal/directory"
 	"github.com/dyammarcano/rpmbuild-cli/internal/initialfile"
 	"github.com/dyammarcano/rpmbuild-cli/internal/structures"
+	"github.com/dyammarcano/utils/display"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -28,30 +31,34 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 }
 
-func InitFunc(cmd *cobra.Command, args []string) error {
-	wd, err := os.Getwd()
+func InitFunc(_ *cobra.Command, args []string) error {
+	rootPath, err := currentDirectory(args)
+
+	projectPath := filepath.Join(rootPath, internal.RpmBuildName)
+
+	if _, err := os.Stat(projectPath); err == nil {
+		return errors.New(fmt.Sprintf("%s already exists", projectPath))
+	}
+
+	if !checkIfGitInitialized(rootPath) {
+		return errors.New("the current directory not have git initialized")
+	}
+
+	if err := directory.CriateFoldersStructure(rootPath); err != nil {
+		return err
+	}
+	fmt.Println("* package structure created")
+
+	if !initialfile.InitialFile(rootPath) {
+		return errors.New("failed to create initial file")
+	}
+	fmt.Printf("* %s created\n", internal.RepoDataFileName)
+
+	db, err := database.NewDatabase(filepath.Join(rootPath, internal.RepoDatabaseFile))
 	if err != nil {
 		return err
 	}
-
-	if len(args) > 0 {
-		if args[0] != "." {
-			wd = filepath.Join(wd, args[0])
-		}
-	}
-
-	if err := directory.CriateFoldersStructure(wd); err != nil {
-		return err
-	}
-
-	initialfile.InitialFile(wd)
-
-	databaseFile := filepath.Join(wd, internal.RepoDatabaseFile)
-
-	db, err := database.NewDatabase(databaseFile)
-	if err != nil {
-		return err
-	}
+	fmt.Println("* report database created")
 
 	defer db.Close()
 
@@ -71,6 +78,18 @@ func InitFunc(cmd *cobra.Command, args []string) error {
 	); err != nil {
 		return err
 	}
+	fmt.Println("* database migration successful")
+
+	if err := display.DisplayDirectoryTree(rootPath); err != nil {
+		fmt.Println("Error:", err)
+	}
 
 	return nil
+}
+
+func checkIfGitInitialized(dir string) bool {
+	if _, err := os.Stat(filepath.Join(dir, ".git")); err == nil {
+		return true
+	}
+	return false
 }

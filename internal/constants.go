@@ -5,24 +5,21 @@ import (
 )
 
 const (
-	RepoDataName  = ".repodata"
-	RpmBuildName  = "rpmbuild"
-	BuildName     = "BUILD"
-	BuildRootName = "BUILDROOT"
-	RpmsName      = "RPMS"
-	SourcesName   = "SOURCES"
-	SpecsName     = "SPECS"
-	SrpmsName     = "SRPMS"
+	RpmBuildName     = ".rpm"
+	PackageName      = "package"
+	RepoDataName     = "repodata"
+	RepoDataFileName = "repodata.toml"
 )
 
 var (
-	BuildPath     = filepath.Join(RpmBuildName, BuildName)
-	BuildRootPath = filepath.Join(RpmBuildName, BuildRootName)
-	RpmsPath      = filepath.Join(RpmBuildName, RpmsName)
-	SourcesPath   = filepath.Join(RpmBuildName, SourcesName)
-	SpecsPath     = filepath.Join(RpmBuildName, SpecsName)
-	SrpmsPath     = filepath.Join(RpmBuildName, SrpmsName)
+	RepoDataPath  = filepath.Join(RpmBuildName, RepoDataName)
+	BuildPath     = filepath.Join(RpmBuildName, PackageName, "BUILD")
+	BuildRootPath = filepath.Join(RpmBuildName, PackageName, "BUILDROOT")
+	RpmsPath      = filepath.Join(RpmBuildName, PackageName, "RPMS")
+	SourcesPath   = filepath.Join(RpmBuildName, PackageName, "SOURCES")
+	SpecsPath     = filepath.Join(RpmBuildName, PackageName, "SPECS")
+	SrpmsPath     = filepath.Join(RpmBuildName, PackageName, "SRPMS")
 
-	RepoDatabaseFile = filepath.Join(RepoDataName, "config.sqlite3")
-	RepoDataFile     = filepath.Join(RepoDataName, "repodata.toml")
+	RepoDatabaseFile = filepath.Join(RpmBuildName, RepoDataName, "config.sqlite3")
+	RepoDataFile     = filepath.Join(RpmBuildName, RepoDataName, RepoDataFileName)
 )

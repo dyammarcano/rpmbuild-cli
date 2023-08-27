@@ -31,20 +31,11 @@ func init() {
 }
 
 func BuildFunc(cmd *cobra.Command, args []string) error {
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	if len(args) > 0 {
-		if args[0] != "." {
-			wd = filepath.Join(wd, args[0])
-		}
-	}
+	wd, err := currentDirectory(args)
 
 	repodata := filepath.Join(wd, internal.RepoDataFile)
 
-	//TODO kelper decode encode toml file
+	//TODO helper decode encode toml file
 
 	if _, err := os.Stat(repodata); err != nil {
 		return err

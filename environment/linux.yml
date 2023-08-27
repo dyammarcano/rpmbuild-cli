@@ -1,0 +1,7 @@
+version: '3'
+
+vars:
+  GOOS: linux
+  GOARCH: amd64
+  APP_NAME: rpmbuild-cli
+  GOBUILD: CGO_ENABLED=1 GOARCH={{ .GOARCH }} GOOS={{ .GOOS }}
