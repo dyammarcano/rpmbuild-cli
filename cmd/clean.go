@@ -45,16 +45,14 @@ func CleanFunc(cmd *cobra.Command, args []string) error {
 
 func askForConfirmation(rootPath string) bool {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Are you sure you want to delete the rpm build project? type '%s' to confirm: ", filepath.Base(rootPath))
+	fmt.Printf("Are you sure you want to delete the .rpm build project? type '%s' to confirm: ", filepath.Base(rootPath))
 
 	response, err := reader.ReadString('\n')
 	if err != nil {
-		fmt.Println("Invalid input. Please try again.")
-		return askForConfirmation(rootPath)
+		return false
 	}
 
-	response = strings.ToLower(strings.TrimSpace(response))
-	if response == filepath.Base(rootPath) {
+	if strings.TrimSpace(response) == filepath.Base(rootPath) {
 		return true
 	}
 
