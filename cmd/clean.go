@@ -13,7 +13,7 @@ import (
 
 var cleanCmd = &cobra.Command{
 	Use:   "clean",
-	Short: "Deletes the specified project folder.",
+	Short: "Deletes the RPM build project in the current directory.",
 	Long: `The 'clean' command deletes the specified project folder and all of its contents.
 It requires confirmation before proceeding with the deletion to avoid accidental removal of important data.`,
 	RunE: CleanFunc,
@@ -32,7 +32,7 @@ func CleanFunc(cmd *cobra.Command, args []string) error {
 	projectPath := filepath.Join(rootPath, internal.RpmBuildName)
 
 	if _, err := os.Stat(projectPath); err == nil {
-		if askForConfirmation(rootPath) {
+		if askForConfirmationClean(rootPath) {
 			if err := os.RemoveAll(projectPath); err != nil {
 				return err
 			}
@@ -43,7 +43,7 @@ func CleanFunc(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func askForConfirmation(rootPath string) bool {
+func askForConfirmationClean(rootPath string) bool {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("Are you sure you want to delete the .rpm build project? type '%s' to confirm: ", filepath.Base(rootPath))
 
@@ -57,5 +57,5 @@ func askForConfirmation(rootPath string) bool {
 	}
 
 	fmt.Println("Invalid input. Please try again.")
-	return askForConfirmation(rootPath)
+	return askForConfirmationClean(rootPath)
 }
