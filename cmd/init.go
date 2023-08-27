@@ -33,6 +33,9 @@ func init() {
 
 func InitFunc(_ *cobra.Command, args []string) error {
 	rootPath, err := currentDirectory(args)
+	if err != nil {
+		return err
+	}
 
 	projectPath := filepath.Join(rootPath, internal.RpmBuildName)
 
