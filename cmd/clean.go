@@ -16,14 +16,14 @@ var cleanCmd = &cobra.Command{
 	Short: "Deletes the RPM build project in the current directory.",
 	Long: `The 'clean' command deletes the specified project folder and all of its contents.
 It requires confirmation before proceeding with the deletion to avoid accidental removal of important data.`,
-	RunE: CleanFunc,
+	RunE: cleanFunc,
 }
 
 func init() {
 	rootCmd.AddCommand(cleanCmd)
 }
 
-func CleanFunc(cmd *cobra.Command, args []string) error {
+func cleanFunc(cmd *cobra.Command, args []string) error {
 	rootPath, err := currentDirectory(args)
 	if err != nil {
 		return err

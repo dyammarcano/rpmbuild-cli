@@ -12,3 +12,5 @@ use git info to append to spec file
 
 - [x] create init command to create a new project
 - [x] create clean command to remove all files created by the program
+- [ ] create web command to run the program in gui mode
+- [ ] create analyze command to run the program in analyze mode

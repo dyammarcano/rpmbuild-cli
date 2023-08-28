@@ -29,14 +29,14 @@ Use it like this:
 rpmbuild-cli init
 
 Remember, you need to confirm the operation when asked "Are you sure you want to create the .rpm build project?", by typing 'yes' or 'no'.`,
-	RunE: InitFunc,
+	RunE: initFunc,
 }
 
 func init() {
 	rootCmd.AddCommand(initCmd)
 }
 
-func InitFunc(_ *cobra.Command, args []string) error {
+func initFunc(_ *cobra.Command, args []string) error {
 	rootPath, err := currentDirectory(args)
 	if err != nil {
 		return err
