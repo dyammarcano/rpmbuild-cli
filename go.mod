@@ -4,9 +4,12 @@ go 1.21.0
 
 require (
 	github.com/BurntSushi/toml v1.3.2
-	github.com/dyammarcano/utils v0.1.1
+	github.com/Masterminds/semver v1.5.0
+	github.com/dyammarcano/utils v0.1.3
 	github.com/gin-gonic/gin v1.9.1
+	github.com/mattn/go-zglob v0.0.4
 	github.com/pelletier/go-toml/v2 v2.0.8
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.7.0
 	gorm.io/driver/sqlite v1.5.3
 	gorm.io/gorm v1.25.4

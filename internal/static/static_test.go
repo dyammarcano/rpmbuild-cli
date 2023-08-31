@@ -3,7 +3,7 @@ package static
 import "testing"
 
 func TestResources(t *testing.T) {
-	data, err := Resources()
+	data, err := GetRsouce("index.html")
 	if err != nil {
 		t.Errorf("Resources() = %v; want %v", err, nil)
 	}

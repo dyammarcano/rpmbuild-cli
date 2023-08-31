@@ -2,7 +2,7 @@ package static
 
 import (
 	"embed"
-	"io/fs"
+	"fmt"
 )
 
 // Build VueJS app
@@ -11,10 +11,7 @@ import (
 //go:embed all:resources
 var res embed.FS
 
-func Resources() (fs.FS, error) {
-	return fs.Sub(res, "resources")
-}
-
-func ResourcesAll() embed.FS {
-	return res
+func GetRsouce(name string) ([]byte, error) {
+	path := fmt.Sprintf("resources/%s", name)
+	return res.ReadFile(path)
 }

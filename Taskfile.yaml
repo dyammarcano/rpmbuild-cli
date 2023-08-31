@@ -13,14 +13,9 @@ vars:
   PPROF_CMD: '{{ .GOCMD }} tool pprof -pdf {{ .BUILD_DIR }}/profile.out > {{ .BUILD_DIR }}/profile.pdf'
 
 includes:
-  build: ./environment/{{OS}}.yml
+  build: ./environment/{{OS}}.yaml
 
 tasks:
-  run:
-    label: run the app
-    cmds:
-      - '{{ .GOCMD }} run ./main.go'
-
   build:
     label: build the app for {{ .GOOS }}/{{ .GOARCH }}
     cmds:
@@ -31,37 +26,18 @@ tasks:
     cmds:
       - '{{ .GOBUILD }} {{ .GOCMD }} build -o {{ .BUILD_DIR }}/{{ .APP_NAME_DIST }} {{ .GOFLAGS }} {{ .LDFLAGS }} ./main.go'
 
-  build-dist-linux-amd64:
-    label: Build distribution for Linux amd64
-    cmds:
-      - 'mkdir -p {{ .BUILD_DIR }}/dist/linux-amd64'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o {{ .BUILD_DIR }}/dist/linux-amd64/{{ .APP_NAME }} {{ .LDFLAGS }} ./main.go'
-      # - 'zip -j {{ .BUILD_DIR }}/dist/linux-amd64/{{ .APP_NAME }}.zip {{ .BUILD_DIR }}/dist/linux-amd64/{{ .APP_NAME }}'
-
-  build-hacks:
-    label: build all binaries in hack folder
-    cmds:
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/eventReceiver.exe {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/eventReceiver/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/serverReceiveMock.exe {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/serverReceiveMock/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/eventSender.exe {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/eventSender/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/config2string.exe {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/config2string/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/mockFile.exe {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/mockFile/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/maskParticipant.exe {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/maskParticipant/main.go'
-
-  build-hacks-linux:
-    label: build all binaries in hack folder linux
-    cmds:
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/eventReceiver {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/eventReceiver/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/serverReceiveMock {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/serverReceiveMock/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/eventSender {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/eventSender/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/config2string {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/config2string/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/mockFile {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/mockFile/main.go'
-      - '{{ .GOBUILD }} {{ .GOCMD }} build -o hacks/bin/maskParticipant {{ .GOFLAGS }} {{ .LDFLAGS }} ./hacks/maskParticipant/main.go'
+  generated:
+    - '{{ .GOBUILD }} {{ .GOCMD }} generate ./...'
 
   test:
     label: run tests
     cmds:
       - '{{ .GOCMD }} test -v ./...'
+
+  vite-run:
+    label: run vite dev server
+    cmds:
+      - 'cd vue-project && npm run dev -- --port 8080'
 
   vulncheck:
     label: run vulncheck

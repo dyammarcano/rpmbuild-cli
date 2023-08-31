@@ -36,7 +36,7 @@ func serveFunc(cmd *cobra.Command, args []string) error {
 
 	router.GET("/assets/*filepath", func(c *gin.Context) {
 		path := c.Param("filepath")
-		data, err := static.ResourcesAll().ReadFile("resources/assets" + path)
+		data, err := static.GetRsouce("assets" + path)
 		if err != nil {
 			c.String(http.StatusNotFound, "Resource file not found")
 			return
@@ -46,7 +46,7 @@ func serveFunc(cmd *cobra.Command, args []string) error {
 	})
 
 	router.GET("/favicon.ico", func(c *gin.Context) {
-		data, err := static.ResourcesAll().ReadFile("resources/favicon.ico")
+		data, err := static.GetRsouce("favicon.ico")
 		if err != nil {
 			c.String(http.StatusNotFound, "favicon file not found")
 			return
@@ -56,7 +56,7 @@ func serveFunc(cmd *cobra.Command, args []string) error {
 	})
 
 	router.GET("/", func(c *gin.Context) {
-		data, err := static.ResourcesAll().ReadFile("resources/index.html")
+		data, err := static.GetRsouce("index.html")
 		if err != nil {
 			c.String(http.StatusNotFound, "File not found")
 			return
