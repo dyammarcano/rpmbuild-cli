@@ -15,22 +15,22 @@ func Changelog(repoPath string) ([]structures.Changelog, error) {
 	}
 
 	if _, err := os.Stat(filepath.Join(repoPath, ".git")); err == nil {
-		output, err := exec.Command("git", "log", "--pretty=format:%h|%an|%ae|%ad|%s").Output()
+		output, err := exec.Command("git", "log", "--pretty=format:%h|%an|%ae|%ad|%B").Output()
 		if err != nil {
 			return nil, err
 		}
 
 		var commits []structures.Changelog
 
-		for _, commitLine := range strings.Split(string(output), "\n") {
+		for _, commitLine := range strings.Split(string(output), "\n\n") {
 			commitDetails := strings.Split(commitLine, "|")
 			if len(commitDetails) == 5 {
 				commit := structures.Changelog{
-					Hash:    commitDetails[0],
-					Author:  commitDetails[1],
-					Email:   commitDetails[2],
-					Date:    commitDetails[3],
-					Message: commitDetails[4],
+					Hash:    strings.TrimSpace(commitDetails[0]),
+					Author:  strings.TrimSpace(commitDetails[1]),
+					Email:   strings.TrimSpace(commitDetails[2]),
+					Date:    strings.TrimSpace(commitDetails[3]),
+					Message: strings.TrimSpace(strings.Join(commitDetails[4:], "\n")),
 				}
 				commits = append(commits, commit)
 			}
