@@ -37,7 +37,7 @@ func init() {
 }
 
 func initFunc(_ *cobra.Command, args []string) error {
-	rootPath, err := currentDirectory(args)
+	rootPath, err := directory.CurrentDirectory(args)
 	if err != nil {
 		return err
 	}

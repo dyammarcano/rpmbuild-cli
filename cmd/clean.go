@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/dyammarcano/rpmbuild-cli/internal"
+	"github.com/dyammarcano/rpmbuild-cli/internal/directory"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,7 +25,7 @@ func init() {
 }
 
 func cleanFunc(cmd *cobra.Command, args []string) error {
-	rootPath, err := currentDirectory(args)
+	rootPath, err := directory.CurrentDirectory(args)
 	if err != nil {
 		return err
 	}

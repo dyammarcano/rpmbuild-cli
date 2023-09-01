@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -20,23 +18,7 @@ to quickly create a Cobra application.`,
 }
 
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
-}
-
-func currentDirectory(args []string) (string, error) {
-	wd, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-
-	if len(args) > 0 {
-		if args[0] != "." {
-			wd = filepath.Join(wd, args[0])
-		}
-	}
-
-	return wd, nil
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/dyammarcano/rpmbuild-cli/internal/directory"
 	"github.com/dyammarcano/rpmbuild-cli/internal/static"
 	"net/http"
 	"strings"
@@ -27,10 +28,10 @@ func init() {
 }
 
 func serveFunc(cmd *cobra.Command, args []string) error {
-	//rootPath, err := currentDirectory(args)
-	//if err != nil {
-	//	return err
-	//}
+	_, err := directory.CurrentDirectory(args)
+	if err != nil {
+		return err
+	}
 
 	router := gin.Default()
 

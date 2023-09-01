@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/dyammarcano/rpmbuild-cli/internal/directory"
 
 	"github.com/spf13/cobra"
 )
@@ -16,11 +17,22 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("release called")
-	},
+	RunE: releaseFunc,
 }
 
 func init() {
 	rootCmd.AddCommand(releaseCmd)
+}
+
+func releaseFunc(cmd *cobra.Command, args []string) error {
+	_, err := directory.CurrentDirectory(args)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("release called")
+	//TODO check the database for the source and spec file
+	//TODO check the database for the version
+	//TODO check the database for the build folder
+	return nil
 }

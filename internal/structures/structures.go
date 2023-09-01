@@ -15,6 +15,14 @@ type (
 		DOB        time.Time `toml:"dob"`
 	}
 
+	Changelog struct {
+		Hash    string `gorm:"primaryKey" json:"hash"`
+		Author  string `json:"author"`
+		Email   string `json:"email"`
+		Date    string `json:"date"`
+		Message string `json:"message"`
+	}
+
 	Package struct {
 		PkgID     string `gorm:"primarykey"`
 		Name      string
@@ -55,15 +63,6 @@ type (
 		Name      string
 		Version   string
 		Release   string
-		CreatedAt time.Time `gorm:"autoCreateTime"`
-		UpdatedAt time.Time `gorm:"autoCreateTime"`
-	}
-
-	Changelog struct {
-		PkgKey    int `gorm:"primaryKey"`
-		Author    string
-		Date      string
-		Changelog string
 		CreatedAt time.Time `gorm:"autoCreateTime"`
 		UpdatedAt time.Time `gorm:"autoCreateTime"`
 	}

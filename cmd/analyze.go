@@ -18,14 +18,14 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	RunE: AnalyzeFunc,
+	RunE: analyzeFunc,
 }
 
 func init() {
 	rootCmd.AddCommand(analyzeCmd)
 }
 
-func AnalyzeFunc(cmd *cobra.Command, args []string) error {
+func analyzeFunc(cmd *cobra.Command, args []string) error {
 	wd, err := os.Getwd()
 	if err != nil {
 		return err
