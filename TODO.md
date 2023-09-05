@@ -14,3 +14,9 @@ use git info to append to spec file
 - [x] create clean command to remove all files created by the program
 - [ ] create web command to run the program in gui mode
 - [ ] create analyze command to run the program in analyze mode
+
+### Ingsights
+
+- [ ] Add a `prepare` command to use the folder structure and criate a spec file with the information about the project and the respective macros.
+- [ ] Add a `--verbose` flag to the `run` command to print the output of the command being run.
+- [ ] Add a `--dry-run` flag to the `run` command to print the command that would be run.
