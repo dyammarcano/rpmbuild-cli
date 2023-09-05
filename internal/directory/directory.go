@@ -89,35 +89,30 @@ func walkFiles(path string) ([]DirEntry, error) {
 }
 
 /*
-└── .rpm
-	├── package
-	│   ├── BUILD
-	│   ├── BUILDROOT
-	│   ├── RPMS
-	│   ├── SOURCES
-	│   ├── SPECS
-	│   └── SRPMS
-	└── repodata
-		└── config.sqlite3
-		└── repodata.toml
+CriateFoldersStructure
+└── rpm
+    ├── package
+    │	└── CriateFoldersStructureLinux
+    └── repodata
+        └── config.sqlite3
+        └── repodata.toml
 */
 
 // CriateFoldersStructure creates the folders structure for the RPM build
 func CriateFoldersStructure(basePath string) error {
 	directories := []string{
 		internal.RepoDataPath,
-		internal.BuildPath,
-		internal.BuildRootPath,
-		internal.RpmsPath,
-		internal.SourcesPath,
-		internal.SpecsPath,
-		internal.SrpmsPath,
+		internal.PackagePath,
 	}
 
 	for _, directory := range directories {
 		if err := os.MkdirAll(filepath.Join(basePath, directory), 0755); err != nil {
 			return err
 		}
+	}
+
+	if err := CriateFoldersStructureLinux(filepath.Join(basePath, internal.PackagePath)); err != nil {
+		return err
 	}
 
 	return nil
@@ -156,10 +151,10 @@ func CriateFoldersStructure(basePath string) error {
 │	├── src				(source code)
 │	└── tmp				(temporary files)
 └── var					(variable data)
-	├── lib				(variable state information)
-	├── tmp				(temporary files)
-	├── cache			(application cache data)
-	└── log				(log files)
+    ├── lib				(variable state information)
+    ├── tmp				(temporary files)
+    ├── cache			(application cache data)
+    └── log				(log files)
 */
 
 func CriateFoldersStructureLinux(basePath string) error {
@@ -214,7 +209,7 @@ func CriateFoldersStructureLinux(basePath string) error {
 func CleanDirectoriesNotUsed(basePath string) error {
 	var dirs []string
 
-	err := filepath.WalkDir(basePath, func(path string, d fs.DirEntry, err error) error {
+	if err := filepath.WalkDir(basePath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -224,9 +219,7 @@ func CleanDirectoriesNotUsed(basePath string) error {
 		}
 
 		return nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 

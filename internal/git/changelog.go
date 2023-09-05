@@ -25,13 +25,20 @@ func Changelog(repoPath string) ([]structures.Changelog, error) {
 		for _, commitLine := range strings.Split(string(output), "<#>") {
 			commitDetails := strings.Split(commitLine, "|")
 			if len(commitDetails) == 5 {
+				parts := strings.SplitN(commitDetails[4], "\n\n", 2)
+
 				commit := structures.Changelog{
-					Hash:    strings.TrimSpace(commitDetails[0]),
-					Author:  strings.TrimSpace(commitDetails[1]),
-					Email:   strings.TrimSpace(commitDetails[2]),
-					Date:    strings.TrimSpace(commitDetails[3]),
-					Message: strings.TrimSpace(strings.Join(commitDetails[4:], "\n")),
+					Hash:   strings.TrimSpace(commitDetails[0]),
+					Author: strings.TrimSpace(commitDetails[1]),
+					Email:  strings.TrimSpace(commitDetails[2]),
+					Date:   strings.TrimSpace(commitDetails[3]),
+					Title:  strings.TrimSpace(parts[0]),
 				}
+
+				if len(parts) == 2 {
+					commit.Message = strings.TrimSpace(parts[1])
+				}
+
 				commits = append(commits, commit)
 			}
 		}

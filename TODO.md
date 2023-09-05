@@ -20,3 +20,11 @@ use git info to append to spec file
 - [ ] Add a `prepare` command to use the folder structure and criate a spec file with the information about the project and the respective macros.
 - [ ] Add a `--verbose` flag to the `run` command to print the output of the command being run.
 - [ ] Add a `--dry-run` flag to the `run` command to print the command that would be run.
+
+```
+rpmbuild-cli prepare --java --use jdk-11.0.2 --use maven-3.6.0 --use tomcat-9.0.16 --use postgresql-11.2
+rpmbuild-cli prepare --native --use gcc-8.2.1 --use make-4.2.1 --use cmake-3.13.4 --use postgresql-11.2
+rpmbuild-cli prepare --native --use golang-1.11.5 --use postgresql-11.2
+```
+
+### Demo how to use the program

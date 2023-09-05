@@ -11,7 +11,7 @@ import (
 // prepareCmd represents the prepare command
 var prepareCmd = &cobra.Command{
 	Use:   "prepare",
-	Short: "A brief description of your command",
+	Short: "Prepare package structure for building",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -25,7 +25,7 @@ func init() {
 	rootCmd.AddCommand(prepareCmd)
 }
 
-func prepareFunc(cmd *cobra.Command, args []string) error {
+func prepareFunc(_ *cobra.Command, args []string) error {
 	rootPath, err := directory.CurrentDirectory(args)
 	if err != nil {
 		return err

@@ -28,7 +28,7 @@ Use it like this:
 
 rpmbuild-cli init
 
-Remember, you need to confirm the operation when asked "Are you sure you want to create the .rpm build project?", by typing 'yes' or 'no'.`,
+Remember, you need to confirm the operation when asked "Are you sure you want to create the rpm build project?", by typing 'yes' or 'no'.`,
 	RunE: initFunc,
 }
 
@@ -41,6 +41,8 @@ func initFunc(_ *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	kind := structures.MetadataTypeJson
 
 	if askForConfirmationCreate(rootPath) {
 		projectPath := filepath.Join(rootPath, internal.RpmBuildName)
@@ -56,6 +58,7 @@ func initFunc(_ *cobra.Command, args []string) error {
 		if err := directory.CriateFoldersStructure(rootPath); err != nil {
 			return err
 		}
+
 		fmt.Println("* package structure created")
 
 		if !initialfile.InitialFile(rootPath) {
@@ -64,6 +67,10 @@ func initFunc(_ *cobra.Command, args []string) error {
 		fmt.Printf("* %s created\n", internal.RepoDataFileName)
 
 		if err := createDatabase(rootPath); err != nil {
+			return err
+		}
+
+		if err := initialfile.InitialMetadataFile(projectPath, kind); err != nil {
 			return err
 		}
 
@@ -114,7 +121,7 @@ func checkIfGitInitialized(dir string) bool {
 
 func askForConfirmationCreate(rootPath string) bool {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Are you sure you want to create the .rpm build project? type 'yes' or 'no': ")
+	fmt.Printf("Are you sure you want to create the %s build project? 'yes' or 'no': ", filepath.Join(rootPath, internal.RpmBuildName))
 
 	response, err := reader.ReadString('\n')
 	if err != nil {

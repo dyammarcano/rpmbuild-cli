@@ -1,1 +1,1 @@
-# rpmbuild-cli
+# rpmbuild-cli PoC only for now, under active development
