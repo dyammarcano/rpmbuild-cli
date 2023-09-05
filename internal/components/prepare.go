@@ -8,7 +8,6 @@ import (
 )
 
 func Prepare(rootPath string) error {
-
 	changelogs, err := git.Changelog(rootPath)
 	if err != nil {
 		log.Print(err)
